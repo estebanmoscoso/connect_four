@@ -41,8 +41,9 @@ class Window:
 
     def key_listener(self, e):
         if e.char == 'p':
-            self.game.play_one_turn()
-            self.render_grid(self.game.grid)
+            if not self.game.game_over:
+                self.game.play_one_turn()
+                self.render_grid(self.game.grid)
         if e.char == 'x':
             self.root.destroy()
 
