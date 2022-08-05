@@ -10,6 +10,7 @@ class Game:
         self.game_over = False
         self.games_played = 0
         self.games_won = {player_1: 0, player_2: 0}
+        self.last_move = (-1, -1)
 
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]
@@ -22,6 +23,7 @@ class Game:
 
     def play_one_turn(self, index=-1):
         move = get_next_move(self.grid, index)
+        self.save_last_move(move)
         self.make_move(move, self.current_player)
         winner = self.get_winner()
         if winner:
@@ -59,6 +61,13 @@ class Game:
             if self.grid[i][move] == BLANK_CHAR:
                 self.grid[i][move] = tag
                 return
+
+    def save_last_move(self, move):
+        for i in range(5):
+            if self.grid[i+1][move] != BLANK_CHAR:
+                self.last_move = (move, i)
+                return
+        self.last_move = (move, 5)
 
     def get_winner(self):
         for player in self.players:

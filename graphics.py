@@ -72,17 +72,17 @@ class Window:
         elif c == 'p':
             if not self.game.game_over:
                 self.game.play_one_turn(-1)
-                self.update_grid()
+                self.update_cell(self.game.last_move[0], self.game.last_move[1])
 
         elif c == ' ':
             while not self.game.game_over:
                 self.game.play_one_turn(-1)
-                self.update_grid()
+                self.update_cell(self.game.last_move[0], self.game.last_move[1])
 
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
             if not self.game.game_over:
                 self.game.play_one_turn(int(e.char))
-                self.update_grid()
+                self.update_cell(self.game.last_move[0], self.game.last_move[1])
 
         elif c == 'x':
             self.root.destroy()
