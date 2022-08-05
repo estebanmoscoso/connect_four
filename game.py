@@ -1,20 +1,21 @@
 from random import randrange
-from player import Player
+from policy import get_next_move
 
 
 class Game:
-    def __init__(self, player_1: Player, player_2: Player, starting_player: Player | None = None):
+    def __init__(self, player_1: str, player_2: str, starting_player: str | None = None):
         self.players = [player_1, player_2]
         self.grid = [['-' for _ in range(7)] for _ in range(6)]
         self.game_over = False
+        self.player_move = 0
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]
         else:
             self.current_player = starting_player
 
-    def play_one_turn(self):
-        move = self.current_player.get_next_move(self.grid)
-        self.make_move(move, self.current_player.tag)
+    def play_one_turn(self, index=-1):
+        move = get_next_move(self.grid, index)
+        self.make_move(move, self.current_player)
         winner = self.get_winner()
         if winner:
             self.game_over = True
@@ -49,14 +50,12 @@ class Game:
                 self.grid[i][move] = tag
                 return
 
-
     def get_winner(self):
         if self.connect_4('X') >= 4:
             return 'X'
         if self.connect_4('O') >= 4:
             return 'O'
         return None
-
 
     def connect_4(self, tag, i_s=0, j_s=0, dir=None, acc_tags = 0):
         result = 0

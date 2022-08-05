@@ -40,10 +40,16 @@ class Window:
         blank_frame.place(x=0, y=0)
 
     def key_listener(self, e):
-        if e.char == 'p':
+        c = e.char
+
+        if c == 'p':
             if not self.game.game_over:
-                self.game.play_one_turn()
+                self.game.play_one_turn(-1)
                 self.render_grid(self.game.grid)
-        if e.char == 'x':
+        elif c in ['0', '1', '2', '3', '4', '5', '6']:
+            if not self.game.game_over:
+                self.game.play_one_turn(int(e.char))
+                self.render_grid(self.game.grid)
+        elif c == 'x':
             self.root.destroy()
 
