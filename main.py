@@ -4,13 +4,11 @@ from player import Player
 
 
 def run():
-    window = Window()
     player_1 = Player('X')
     player_2 = Player('O')
     game = Game(player_1, player_2)
-    for i in range(42):
-        game.play_one_turn()
-    window.render_grid(game.grid)
+    window = Window(game)
+
     window.end()
 
 
