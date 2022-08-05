@@ -15,7 +15,9 @@ class Window:
 
         self.root.mainloop()
 
-    def render_grid(self, grid=[['-' for i in range(7)] for j in range(6)], x_offset=20, y_offset=20):
+    def render_grid(self, grid=None, x_offset=20, y_offset=20):
+        if grid is None:
+            grid = [['-' for _ in range(7)] for _ in range(6)]
         for i in range(8):
             vertical_line = Frame(self.root, bg='white', height=152, width=1)
             vertical_line.place(x=x_offset+20*i, y=y_offset)
@@ -52,4 +54,3 @@ class Window:
                 self.render_grid(self.game.grid)
         elif c == 'x':
             self.root.destroy()
-
