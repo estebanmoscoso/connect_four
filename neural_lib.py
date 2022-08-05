@@ -15,6 +15,9 @@ alpha = 0.5
 target = [0 for _ in range(N_OUT)]
 counselor_out = [0 for _ in range(N_OUT)]
 inputs = [0 for _ in range(N_OUT)]
+peak_value = 0
+net_winner = 0
+backpropagation_count = 0
 
 
 class OutLayer:
