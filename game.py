@@ -1,17 +1,20 @@
 from random import randrange
 from policy import get_next_move
+import neural_lib as nl
 BLANK_CHAR = ' '
 
 
 class Game:
     def __init__(self, player_1: str = 'X', player_2: str = 'O', starting_player: str | None = None):
         self.players = [player_1, player_2]
+        self.starting_player = starting_player
         self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
         self.game_over = False
         self.games_played = 0
         self.games_won = {player_1: 0, player_2: 0}
         self.last_move = (-1, -1)
         self.moves_counter = 0
+        self.b_flag = False
 
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]
@@ -22,6 +25,13 @@ class Game:
         self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
         self.game_over = False
         self.moves_counter = 0
+        for i in range(7):
+            nl.target[i] = 0
+
+        if self.starting_player is None:
+            self.current_player = self.players[randrange(2)]
+        else:
+            self.current_player = self.starting_player
 
     def play_one_turn(self, index=-1):
         move = get_next_move(self.grid, index)

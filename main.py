@@ -3,7 +3,7 @@ from game import Game
 
 
 def run():
-    game = Game()
+    game = Game('O', 'X', starting_player='O')
     window = Window(game)
     window.end()
 
