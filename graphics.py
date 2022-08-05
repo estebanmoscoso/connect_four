@@ -48,6 +48,10 @@ class Window:
             if not self.game.game_over:
                 self.game.play_one_turn(-1)
                 self.render_grid(self.game.grid)
+        elif c == ' ':
+            while not self.game.game_over:
+                self.game.play_one_turn(-1)
+                self.render_grid(self.game.grid)
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
             if not self.game.game_over:
                 self.game.play_one_turn(int(e.char))

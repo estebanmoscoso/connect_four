@@ -8,6 +8,7 @@ class Game:
         self.grid = [['-' for _ in range(7)] for _ in range(6)]
         self.game_over = False
         self.player_move = 0
+
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]
         else:
