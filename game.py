@@ -1,18 +1,24 @@
 from random import randrange
 from policy import get_next_move
+BLANK_CHAR = ' '
 
 
 class Game:
     def __init__(self, player_1: str = 'X', player_2: str = 'O', starting_player: str | None = None):
         self.players = [player_1, player_2]
-        self.grid = [['-' for _ in range(7)] for _ in range(6)]
+        self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
         self.game_over = False
-        self.player_move = 0
+        self.games_played = 0
+        self.games_won = {player_1: 0, player_2: 0}
 
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]
         else:
             self.current_player = starting_player
+
+    def restart(self):
+        self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
+        self.game_over = False
 
     def play_one_turn(self, index=-1):
         move = get_next_move(self.grid, index)
@@ -20,10 +26,13 @@ class Game:
         winner = self.get_winner()
         if winner:
             self.game_over = True
+            self.games_played += 1
+            self.games_won[winner] += 1
             self.winner_end(winner)
             return
         elif self.no_more_possible_moves():
             self.game_over = True
+            self.games_played += 1
             self.tie_end()
             return
         self.change_player()
@@ -35,7 +44,7 @@ class Game:
             self.current_player = self.players[0]
 
     def no_more_possible_moves(self):
-        return all([self.grid[0][i] != '-' for i in range(7)])
+        return all([self.grid[0][i] != BLANK_CHAR for i in range(7)])
 
     @staticmethod
     def winner_end(winner):
@@ -47,7 +56,7 @@ class Game:
 
     def make_move(self, move, tag):
         for i in range(5, -1, -1):
-            if self.grid[i][move] == '-':
+            if self.grid[i][move] == BLANK_CHAR:
                 self.grid[i][move] = tag
                 return
 
