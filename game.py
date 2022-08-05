@@ -21,6 +21,7 @@ class Game:
     def restart(self):
         self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
         self.game_over = False
+        self.moves_counter = 0
 
     def play_one_turn(self, index=-1):
         move = get_next_move(self.grid, index)
