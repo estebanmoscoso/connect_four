@@ -11,6 +11,7 @@ class Game:
         self.games_played = 0
         self.games_won = {player_1: 0, player_2: 0}
         self.last_move = (-1, -1)
+        self.moves_counter = 0
 
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]
@@ -60,6 +61,12 @@ class Game:
         for i in range(5, -1, -1):
             if self.grid[i][move] == BLANK_CHAR:
                 self.grid[i][move] = tag
+                return
+
+    def unmake_move(self, move):
+        for i in range(6):
+            if self.grid[i][move] != BLANK_CHAR:
+                self.grid[i][move] = BLANK_CHAR
                 return
 
     def save_last_move(self, move):

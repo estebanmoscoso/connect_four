@@ -3,7 +3,8 @@ from math import exp
 ROWS = 6
 COLUMNS = 7
 GRID_SIZE = ROWS*COLUMNS
-N_IN = GRID_SIZE*3
+N_MOVES = 6
+N_IN = GRID_SIZE*3 + N_MOVES
 N_OUT = COLUMNS
 N_HID = (N_IN + N_OUT)//2  # TODO: Get a more appropriate value
 
