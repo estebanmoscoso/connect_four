@@ -39,6 +39,7 @@ class Game:
             self.tie_end()
             return
         self.change_player()
+        self.moves_counter += 1
 
     def change_player(self):
         if self.current_player == self.players[0]:
