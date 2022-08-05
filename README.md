@@ -1,6 +1,8 @@
 # Deep Reinforcement Learning Agent that Plays Connect 4
 This project trains a neural network to play the game of Connect-4 at (hopefully) human level
 
+## Prerequisites
+- Have installed [python >= 3.7](https://www.python.org/downloads/)
 
 ## Installation steps
 - Open a new terminal and go to the folder where you want to download the project
