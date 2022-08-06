@@ -5,7 +5,7 @@ BLANK_CHAR = ' '
 
 
 class Game:
-    def __init__(self, player_1: str = 'X', player_2: str = 'O', starting_player: str | None = None):
+    def __init__(self, player_1: str = 'X', player_2: str = 'O', starting_player = None):
         self.players = [player_1, player_2]
         self.starting_player = starting_player
         self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
