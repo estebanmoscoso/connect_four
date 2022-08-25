@@ -149,8 +149,6 @@ class Window:
         elif c == 'r':
             init_weights()
             print('Pesos randomizados')
-            print(nl.hidden_layer.weights)
-            print(nl.out_layer.weights)
             
             
             
