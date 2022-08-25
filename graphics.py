@@ -4,7 +4,6 @@ import o_learns
 from o_learns import feed_back_pro
 import neural_lib as nl
 from save_weights import *
-from neural_lib import *
 
 class Window:
     def __init__(self, game):
@@ -146,5 +145,12 @@ class Window:
         elif c == 'c':
             cargar_pesos()
             print('Pesos Cargados')
-            print(hidden_layer.weights)
+            
+        elif c == 'r':
+            init_weights()
+            print('Pesos randomizados')
+            print(nl.hidden_layer.weights)
+            print(nl.out_layer.weights)
+            
+            
             

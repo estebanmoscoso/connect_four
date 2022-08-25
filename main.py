@@ -4,8 +4,8 @@ from game import Game
 
 def run():
     game = Game('O', 'X', starting_player='O')
-    x = game.players
-    print(x)
+    #x = game.players
+    #print(x)
     window = Window(game)
     window.end()
 

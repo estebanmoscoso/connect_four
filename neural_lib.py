@@ -48,6 +48,10 @@ def init_weights():
     for k in range(N_HID):
         for i in range(N_IN):
             hidden_layer.weights[k][i] = get_random_weight()
+        
+    for k in range(N_OUT):
+        for i in range(N_HID):
+            out_layer.weights[k][i] = get_random_weight()
 
 
 def clear_weights():
