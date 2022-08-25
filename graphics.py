@@ -3,7 +3,8 @@ from tkinter import *
 import o_learns
 from o_learns import feed_back_pro
 import neural_lib as nl
-
+from save_weights import *
+from neural_lib import *
 
 class Window:
     def __init__(self, game):
@@ -137,3 +138,13 @@ class Window:
 
         elif c == 'x':
             self.root.destroy()
+            
+        elif c == 's':
+            salvar_pesos()
+            print('Pesos Guardados')
+            
+        elif c == 'c':
+            cargar_pesos()
+            print('Pesos Cargados')
+            print(hidden_layer.weights)
+            

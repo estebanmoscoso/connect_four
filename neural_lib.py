@@ -6,7 +6,7 @@ GRID_SIZE = ROWS*COLUMNS
 N_MOVES = 6
 N_IN = GRID_SIZE*3 + N_MOVES
 N_OUT = COLUMNS
-N_HID = (N_IN + N_OUT)//2  # TODO: Get a more appropriate value
+N_HID = (N_IN + N_OUT)//2  # TO DO: Get a more appropriate value
 
 mid = 0.5
 eta = 0.125
