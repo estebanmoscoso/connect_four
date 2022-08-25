@@ -9,7 +9,7 @@ def get_next_move(grid: list[list[7]], i: int = -1):
         return get_human_move(grid, i)
 
 
-def get_random_move(grid):
+def get_random_move(grid):  #Busca una columna vacia en la primera fila
     while True:
         index = randrange(7)
         if grid[0][index] == BLANK_CHAR:
@@ -20,5 +20,5 @@ def get_human_move(grid, i: int):
     if grid[0][i] == BLANK_CHAR:
         return i
     else:
-        print('The move you entered is invalid, doing some random move instead.')
+        print('The move you entered is invalid, doing some random move instead.') 
         return get_random_move(grid)
