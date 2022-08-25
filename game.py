@@ -11,7 +11,7 @@ class Game:
         self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
         self.game_over = False
         self.games_played = 0
-        self.games_won = {player_1: 0, player_2: 0}   
+        self.games_won = {player_1: 0, player_2: 0}
         self.last_move = (-1, -1)
         self.moves_counter = 0
         self.b_flag = False
@@ -21,20 +21,17 @@ class Game:
         else:
             self.current_player = starting_player
 
-
     def restart(self):
         self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
         self.game_over = False
         self.moves_counter = 0
         for i in range(7):
-            nl.target[i] = 0   #Preguntar
+            nl.target[i] = 0.1
 
         if self.starting_player is None:
             self.current_player = self.players[randrange(2)]
         else:
             self.current_player = self.starting_player
-
-
 
     def play_one_turn(self, index=-1):
         #En caso de se juegue en la ultima fila
@@ -87,8 +84,8 @@ class Game:
 
     def save_last_move(self, move):  #Explora las filas de 0 a 5 en busqueda de la fila con espacio en blanco donde jugar.
         for i in range(5): #i posible fila donde jugar, i+1 fila a analizar para saber si ya se ha jugado ahi (tiene X u O)
-            if self.grid[i+1][move] != BLANK_CHAR: 
-                self.last_move = (move, i)         
+            if self.grid[i+1][move] != BLANK_CHAR:
+                self.last_move = (move, i)
                 return
         self.last_move = (move, 5) #Si de 0 a 4 no hay una fila vacia, entonces juega en la 5
 
