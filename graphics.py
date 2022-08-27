@@ -5,6 +5,9 @@ import o_learns
 from o_learns import feed_back_pro
 import neural_lib as nl
 from save_weights import *
+import keyboard
+import threading
+import time
 
 class Window:
     def __init__(self, game):
@@ -17,7 +20,7 @@ class Window:
         self.render_flag = True
         self.target_bars = []
         self.target_canvas = None
-
+        self.thread = None
         self.start()
 
     def start(self):
@@ -27,8 +30,10 @@ class Window:
         self.render_back_propagation()
         self.render_target_values()
         self.render_target_bars()
-
+        #self.thread.start()
+        
     def end(self):
+        #self.thread.join()
         self.root.mainloop()
 
     def render_grid(self, x_offset=20, y_offset=20):
@@ -103,6 +108,25 @@ class Window:
     def erase(self):
         for widget in self.root.winfo_children():
             widget.destroy()
+            
+    def fun(self):
+        #while self.game.running:
+        while True:
+            if self.game.running:
+                while not self.game.game_over:
+                    if self.game.current_player == self.game.players[0]:
+                        feed_back_pro(self.game)
+                        if self.render_flag:
+                            self.update_target_values()
+                            #self.render_target_bars()
+                    self.game.play_one_turn(-1)
+                    #time.sleep(0.5)
+                    if self.render_flag:
+                         self.update_cell(self.game.last_move[0], self.game.last_move[1])
+                self.game.restart()
+                self.update_game_stats()
+            
+              
 
     def key_listener(self, e):
         c = e.char
@@ -127,16 +151,27 @@ class Window:
             if self.render_flag:
                 self.update_back_propagation()
 
+
+
         elif c == ' ':
-            while not self.game.game_over:
-                if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
-                    if self.render_flag:
-                        self.update_target_values()
-                        self.render_target_bars()
-                self.game.play_one_turn(-1)
-                if self.render_flag:
-                    self.update_cell(self.game.last_move[0], self.game.last_move[1])
+            # while not self.game.game_over:
+            #     if self.game.current_player == self.game.players[0]:
+            #         feed_back_pro(self.game)
+            #         if self.render_flag:
+            #             self.update_target_values()
+            #             self.render_target_bars()
+            #     self.game.play_one_turn(-1)
+            #     if self.render_flag:
+            #         self.update_cell(self.game.last_move[0], self.game.last_move[1])
+            self.game.running = not self.game.running
+            if self.game.running:
+                self.thread = threading.Thread(name = 'Verify space_flag', target=self.fun, args=())
+                self.thread.start()
+            else:
+                try:
+                    raise threading.ThreadError
+                except threading.ThreadError:
+                    print('Paused Execution')
 
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
             if not self.game.game_over:
@@ -177,5 +212,4 @@ class Window:
             init_weights()
             print('Pesos randomizados')
             
-            
-            
+
