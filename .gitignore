@@ -130,3 +130,6 @@ dmypy.json
 
 # intellij idea
 .idea/
+
+net_hid_weights.txt
+net_out_weights.txt
