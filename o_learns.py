@@ -39,10 +39,8 @@ def fill_inputs(game: Game):
 
 def feed_back_pro(game: Game):
     search_for_max(game)
-    b_flag = game.b_flag
-    if b_flag:
-        nl.fix_all_weights()
-        nl.backpropagation_count += 1
+    nl.fix_all_weights()
+    nl.backpropagation_count += 1
 
 
 def feed_explorer():
@@ -65,10 +63,6 @@ def search_for_max(game: Game, gamma=0.75):
             if winner == game.players[0]:
                 nl.target[i] = 1.0
             game.unmake_move(i)
-    best_i = -1
-    max_t = 0
-    for i in range(7):
-        if nl.target[i] > max_t:
-            max_t = nl.target[i]
-            best_i = i
-    return best_i
+        else:
+            nl.target[i] = 0.0
+

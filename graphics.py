@@ -6,6 +6,7 @@ from o_learns import feed_back_pro
 import neural_lib as nl
 from save_weights import *
 
+
 class Window:
     def __init__(self, game):
         self.root = Tk()
@@ -113,13 +114,15 @@ class Window:
             if self.render_flag:
                 self.render_all()
         elif c == 'p':
+            i = -1
             if not self.game.game_over:
                 if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
+                    if self.game.b_flag:
+                        feed_back_pro(self.game)
                     if self.render_flag:
                         self.update_target_values()
                         self.render_target_bars()
-                self.game.play_one_turn(-1)
+                self.game.play_one_turn(i)
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
         elif c == 'b':
@@ -130,7 +133,8 @@ class Window:
         elif c == ' ':
             while not self.game.game_over:
                 if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
+                    if self.game.b_flag:
+                        feed_back_pro(self.game)
                     if self.render_flag:
                         self.update_target_values()
                         self.render_target_bars()
@@ -141,7 +145,7 @@ class Window:
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
             if not self.game.game_over:
                 if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
+                    # feed_back_pro(self.game)
                     if self.render_flag:
                         self.update_target_values()
                         self.render_target_bars()
@@ -153,11 +157,13 @@ class Window:
             if not self.game.game_over:
                 i = -1
                 if self.game.current_player == self.game.players[0]:
-                    i = o_learns.search_for_max(self.game)
-                    # print('best move: ', i)
+                    max_value = max(nl.target)
+                    i = nl.target.index(max_value)
                 self.game.play_one_turn(i)
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
+                    self.update_target_values()
+                    self.render_target_bars()
 
         elif c == 'a':
             self.render_flag = not self.render_flag
