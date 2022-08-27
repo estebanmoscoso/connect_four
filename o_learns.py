@@ -6,9 +6,8 @@ BLANK_CHAR = ' '
 
 def search_winner_neuron():
     nl.net_winner = 0
-    nl.peak_value = nl.counselor_out[0]
+    nl.peak_value = 0
     for i in range(nl.N_OUT):
-        nl.counselor_out[i] = 0.0
         if nl.out_layer.out[i] >= nl.peak_value:
             nl.peak_value = nl.out_layer.out[i]
             nl.net_winner = i
@@ -58,10 +57,25 @@ def search_for_max(game: Game, gamma=0.75):
             fill_inputs(game)
             feed_explorer()
             search_winner_neuron()
-            nl.target[nl.net_winner] = nl.out_layer.out[nl.net_winner] * gamma
+            nl.target[i] = nl.out_layer.out[nl.net_winner] * gamma
             winner = game.get_winner()
             if winner == game.players[0]:
                 nl.target[i] = 1.0
+            game.unmake_move(i)
+        else:
+            nl.target[i] = 0.0
+
+
+def set_targets(game: Game, gamma=0.75):
+    grid = game.grid
+    for i in range(7):
+        if grid[0][i] == BLANK_CHAR:
+            game.make_move(i, game.players[0])
+            winner = game.get_winner()
+            if winner == game.players[0]:
+                nl.target[i] = 1.0
+            else:
+                nl.target[i] = 0.0
             game.unmake_move(i)
         else:
             nl.target[i] = 0.0

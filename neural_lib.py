@@ -107,11 +107,6 @@ def calculate_output_layer():
         out_layer.out[k] = sigmoid(out_layer.out[k])
 
 
-def backpropagation():
-    calculate_output_layer()
-    calculate_hidden_layer()
-
-
 def inject_noise_weights():
     # Noise injection for hidden layer
     for k in range(N_HID):

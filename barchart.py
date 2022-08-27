@@ -17,17 +17,14 @@ def create(root, data):
     width = .1
 
     ax.clear()
-    ax.set_ylim(0, 1.0)
-    ax.set_ylim(0, 1.0)
-    ax.set_title('Targets')
+    # ax.set_ylim(0, 1.0)
+    ax.set_title('Output neurons')
     rects = ax.bar(ind, data, width)
 
     if canvas:
         canvas.get_tk_widget().pack_forget()
     canvas = FigureCanvasTkAgg(f, master=root)
-# if canvas is not None:
-#     for item in canvas.get_tk_widget().find_all():
-#         canvas.get_tk_widget().delete(item)
+
     canvas.draw()
 
     canvas.get_tk_widget().pack()
