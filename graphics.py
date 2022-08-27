@@ -107,7 +107,7 @@ class Window:
             widget.destroy()
 
     def fun(self):
-        while not self.game.space_flag:
+        while self.game.space_flag:
             if not self.game.game_over:
                 if self.game.current_player == self.game.players[0]:
                     if self.game.b_flag:
@@ -118,7 +118,7 @@ class Window:
                 self.game.play_one_turn(i)
                 if self.game.current_player == self.game.players[0]:
                     o_learns.set_targets(self.game)
-                time.sleep(0.02)
+                # time.sleep(0.02)
 
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])

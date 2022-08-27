@@ -17,7 +17,7 @@ def create(root, data):
     width = .1
 
     ax.clear()
-    # ax.set_ylim(0, 1.0)
+    ax.set_ylim(0, 1.0)
     ax.set_title('Output neurons')
     rects = ax.bar(ind, data, width)
 
