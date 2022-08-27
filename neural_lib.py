@@ -12,7 +12,7 @@ mid = 0.5
 eta = 0.125
 gain = 1.5
 alpha = 0.5
-target = [0.1 for _ in range(N_OUT)]
+target = [0 for _ in range(N_OUT)]
 counselor_out = [0 for _ in range(N_OUT)]
 inputs = [0 for _ in range(N_IN)]
 peak_value = 0
@@ -87,10 +87,6 @@ def fix_all_weights():
 
 
 def sigmoid(x: float):
-    if x > 30:
-        x = 30
-    if x < -30:
-        x = -30
     out = 1/(1 + exp(-gain * x))
     return out
 
@@ -109,11 +105,6 @@ def calculate_output_layer():
         for i in range(N_HID):
             out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
         out_layer.out[k] = sigmoid(out_layer.out[k])
-
-
-def backpropagation():
-    calculate_output_layer()
-    calculate_hidden_layer()
 
 
 def inject_noise_weights():

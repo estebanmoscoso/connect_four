@@ -27,7 +27,7 @@ class Game:
         self.game_over = False
         self.moves_counter = 0
         for i in range(7):
-            nl.target[i] = 0.1
+            nl.target[i] = 0.0
 
         if self.starting_player is None:
             self.current_player = self.players[randrange(2)]

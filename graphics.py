@@ -8,6 +8,7 @@ from save_weights import *
 import threading
 import time
 
+
 class Window:
     def __init__(self, game):
         self.root = Tk()
@@ -19,6 +20,7 @@ class Window:
         self.render_flag = True
         self.target_bars = []
         self.target_canvas = None
+        self.best_move_toggle = False
 
         self.start()
 
@@ -26,8 +28,6 @@ class Window:
         self.root.bind("<KeyPress>", self.key_listener)
         self.render_grid()
         self.render_game_stats()
-        self.render_back_propagation()
-        self.render_target_values()
         self.render_target_bars()
 
     def end(self):
@@ -63,23 +63,24 @@ class Window:
     def render_game_stats(self, x_offset=20, y_offset=20):
         self.game_stats_var.set(f'Games played:      {self.game.games_played}\n'
                                 f'Games won by {self.game.players[0]}: {self.game.games_won[self.game.players[0]]}\n'
-                                f'Games won by {self.game.players[1]}: {self.game.games_won[self.game.players[1]]}')
+                                f'Games won by {self.game.players[1]}: {self.game.games_won[self.game.players[1]]}\n'
+                                f'Back propagation (b): {"On" if self.game.b_flag else "Off"}\n'
+                                f'Best move (q): {"Active" if self.best_move_toggle else "Inactive"}\n'
+                                f'Graphics (a): {"Active" if self.render_flag else "Inactive"}\n'
+                                )
 
-        label = Message(self.root, textvariable=self.game_stats_var, relief=RAISED, width=150)
+        label = Message(self.root, textvariable=self.game_stats_var, relief=RAISED, width=175)
         label.place(x=x_offset + 170, y=y_offset + 10)
 
-    def render_back_propagation(self, x_offset=20, y_offset=20):
-        self.back_prop_var.set(f'Back propagation: {"On" if self.game.b_flag else "Off"}')
-        label = Message(self.root, textvariable=self.back_prop_var, relief=RAISED, width=150)
-        label.place(x=x_offset + 170, y=y_offset + 110)
-
-    def update_back_propagation(self):
-        self.back_prop_var.set(f'Back propagation: {"On" if self.game.b_flag else "Off"}')
 
     def update_game_stats(self):
         self.game_stats_var.set(f'Games played:      {self.game.games_played}\n'
                                 f'Games won by {self.game.players[0]}: {self.game.games_won[self.game.players[0]]}\n'
-                                f'Games won by {self.game.players[1]}: {self.game.games_won[self.game.players[1]]}')
+                                f'Games won by {self.game.players[1]}: {self.game.games_won[self.game.players[1]]}\n'
+                                f'Back propagation (b): {"On" if self.game.b_flag else "Off"}\n'
+                                f'Best move (q): {"Active" if self.best_move_toggle else "Inactive"}\n'
+                                f'Graphics (a): {"Active" if self.render_flag else "Inactive"}\n'
+                                )
 
     def render_target_values(self, x_offset=20, y_offset=20):
         self.target_var.set(f'Targets:\n'
@@ -90,7 +91,7 @@ class Window:
         label.place(x=x_offset + 170, y=y_offset + 150)
 
     def render_target_bars(self):
-        barchart.create(self.root, nl.target)
+        barchart.create(self.root, nl.out_layer.out)
 
     def update_target_values(self):
         self.target_var.set(f'Targets:\n'
@@ -99,32 +100,39 @@ class Window:
 
     def render_all(self):
         self.update_grid()
-        self.update_target_values()
         self.render_target_bars()
 
     def erase(self):
         for widget in self.root.winfo_children():
             widget.destroy()
-            
-            
-            
+
     def fun(self):
-        while self.game.space_flag:
+        while not self.game.space_flag:
             if not self.game.game_over:
                 if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
-                    if self.render_flag:
-                        self.update_target_values()
-                        #self.render_target_bars()
-                self.game.play_one_turn(-1)
+                    if self.game.b_flag:
+                        feed_back_pro(self.game)
+                i = -1
+                if self.best_move_toggle:
+                    i = self.get_best_move()
+                self.game.play_one_turn(i)
+                if self.game.current_player == self.game.players[0]:
+                    o_learns.set_targets(self.game)
                 time.sleep(0.02)
+
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
+                    if self.game.current_player == self.game.players[0] and not self.game.game_over:
+                        self.render_target_bars()
             else:
                 self.game.restart()
                 self.update_grid()
                 self.update_game_stats()
 
+    def get_best_move(self):
+        if self.game.current_player == self.game.players[0]:
+            return nl.net_winner
+        return -1
 
     def key_listener(self, e):
         c = e.char
@@ -135,64 +143,50 @@ class Window:
             if self.render_flag:
                 self.render_all()
         elif c == 'p':
+            i = -1
+            if self.best_move_toggle:
+                i = self.get_best_move()
             if not self.game.game_over:
                 if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
-                    if self.render_flag:
-                        self.update_target_values()
-                        self.render_target_bars()
-                self.game.play_one_turn(-1)
+                    if self.game.b_flag:
+                        feed_back_pro(self.game)
+                self.game.play_one_turn(i)
+                if self.game.current_player == self.game.players[0]:
+                    o_learns.set_targets(self.game)
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
+                    if self.game.current_player == self.game.players[0] and not self.game.game_over:
+                        self.render_target_bars()
         elif c == 'b':
             self.game.b_flag = not self.game.b_flag
-            if self.render_flag:
-                self.update_back_propagation()
+            self.update_game_stats()
 
         elif c == ' ':
-            # while not self.game.game_over:
-            #     if self.game.current_player == self.game.players[0]:
-            #         feed_back_pro(self.game)
-            #         if self.render_flag:
-            #             self.update_target_values()
-            #             self.render_target_bars()
-            #     self.game.play_one_turn(-1)
-            #     if self.render_flag:
-            #         self.update_cell(self.game.last_move[0], self.game.last_move[1])
             self.game.space_flag = not self.game.space_flag
-           
+
             if self.game.space_flag:
                 t = threading.Thread(name = 'Verify space_flag', target=self.fun, args=())
                 t.start()
-                
+
             else:
                 print('Stop')
-                
-
 
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
             if not self.game.game_over:
                 if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
                     if self.render_flag:
-                        self.update_target_values()
                         self.render_target_bars()
                 self.game.play_one_turn(int(e.char))
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
 
         elif c == 'q':
-            if not self.game.game_over:
-                i = -1
-                if self.game.current_player == self.game.players[0]:
-                    i = o_learns.search_for_max(self.game)
-                    # print('best move: ', i)
-                self.game.play_one_turn(i)
-                if self.render_flag:
-                    self.update_cell(self.game.last_move[0], self.game.last_move[1])
+            self.best_move_toggle = not self.best_move_toggle
+            self.update_game_stats()
 
         elif c == 'a':
             self.render_flag = not self.render_flag
+            self.update_game_stats()
 
         elif c == 'x':
             self.root.destroy()
