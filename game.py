@@ -15,6 +15,7 @@ class Game:
         self.last_move = (-1, -1)
         self.moves_counter = 0
         self.b_flag = False
+        self.space_flag = False
 
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]

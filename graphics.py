@@ -5,6 +5,8 @@ import o_learns
 from o_learns import feed_back_pro
 import neural_lib as nl
 from save_weights import *
+import threading
+import time
 
 class Window:
     def __init__(self, game):
@@ -103,6 +105,26 @@ class Window:
     def erase(self):
         for widget in self.root.winfo_children():
             widget.destroy()
+            
+            
+            
+    def fun(self):
+        while self.game.space_flag:
+            if not self.game.game_over:
+                if self.game.current_player == self.game.players[0]:
+                    feed_back_pro(self.game)
+                    if self.render_flag:
+                        self.update_target_values()
+                        #self.render_target_bars()
+                self.game.play_one_turn(-1)
+                time.sleep(0.02)
+                if self.render_flag:
+                    self.update_cell(self.game.last_move[0], self.game.last_move[1])
+            else:
+                self.game.restart()
+                self.update_grid()
+                self.update_game_stats()
+
 
     def key_listener(self, e):
         c = e.char
@@ -128,15 +150,25 @@ class Window:
                 self.update_back_propagation()
 
         elif c == ' ':
-            while not self.game.game_over:
-                if self.game.current_player == self.game.players[0]:
-                    feed_back_pro(self.game)
-                    if self.render_flag:
-                        self.update_target_values()
-                        self.render_target_bars()
-                self.game.play_one_turn(-1)
-                if self.render_flag:
-                    self.update_cell(self.game.last_move[0], self.game.last_move[1])
+            # while not self.game.game_over:
+            #     if self.game.current_player == self.game.players[0]:
+            #         feed_back_pro(self.game)
+            #         if self.render_flag:
+            #             self.update_target_values()
+            #             self.render_target_bars()
+            #     self.game.play_one_turn(-1)
+            #     if self.render_flag:
+            #         self.update_cell(self.game.last_move[0], self.game.last_move[1])
+            self.game.space_flag = not self.game.space_flag
+           
+            if self.game.space_flag:
+                t = threading.Thread(name = 'Verify space_flag', target=self.fun, args=())
+                t.start()
+                
+            else:
+                print('Stop')
+                
+
 
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
             if not self.game.game_over:
