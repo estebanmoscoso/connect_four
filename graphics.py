@@ -12,6 +12,7 @@ import time
 class Window:
     def __init__(self, game):
         self.root = Tk()
+        self.root.title("HOLA")
         self.game = game
         self.grid_vars = [[StringVar() for _ in range(7)] for _ in range(6)]
         self.game_stats_var = StringVar()
@@ -20,19 +21,34 @@ class Window:
         self.render_flag = True
         self.target_bars = []
         self.target_canvas = None
+        self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(126)] for i in range(11)]
         self.best_move_toggle = False
-
         self.start()
 
     def start(self):
         self.root.bind("<KeyPress>", self.key_listener)
         self.render_grid()
+        #self.pesos_canvas.place(x=50,y=0)
+        #self.pesos_canvas2.place(x=57,y=0)
         self.render_game_stats()
         self.render_target_bars()
-
+        self.pesos()
+    
     def end(self):
         self.root.mainloop()
-
+        
+    def pesos(self,x = 50, y = 300):
+        print(len(hidden_layer.weights),len(hidden_layer.weights[0]))
+        for fila in range(len(self.pesos_canvas)):
+            for columna in range(len(self.pesos_canvas[0])):
+                self.pesos_canvas[fila][columna].place(x = x, y = y)
+                if hidden_layer.weights[fila][columna] > 0.001:
+                    self.pesos_canvas[fila][columna].configure(bg='red')
+                if hidden_layer.weights[fila][columna] < -0.001:
+                    self.pesos_canvas[fila][columna].configure(bg='blue')
+                x+=6
+            x = 50; y += 6
+        
     def render_grid(self, x_offset=20, y_offset=20):
         grid = self.game.grid
         for i in range(8):
@@ -71,6 +87,8 @@ class Window:
 
         label = Message(self.root, textvariable=self.game_stats_var, relief=RAISED, width=175)
         label.place(x=x_offset + 170, y=y_offset + 10)
+        
+        
 
 
     def update_game_stats(self):
@@ -112,18 +130,19 @@ class Window:
                 if self.game.current_player == self.game.players[0]:
                     if self.game.b_flag:
                         feed_back_pro(self.game)
+                        self.pesos()
                 i = -1
                 if self.best_move_toggle:
                     i = self.get_best_move()
                 self.game.play_one_turn(i)
                 if self.game.current_player == self.game.players[0]:
                     o_learns.set_targets(self.game)
-                # time.sleep(0.02)
+                time.sleep(0.02)
 
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
-                    if self.game.current_player == self.game.players[0] and not self.game.game_over:
-                        self.render_target_bars()
+                    # if self.game.current_player == self.game.players[0] and not self.game.game_over:
+                    #     self.render_target_bars()
             else:
                 self.game.restart()
                 self.update_grid()
@@ -198,9 +217,11 @@ class Window:
         elif c == 'c':
             cargar_pesos()
             print('Pesos Cargados')
+            self.pesos()
             
         elif c == 'r':
             init_weights()
+            self.pesos()
             print('Pesos randomizados')
             
             
