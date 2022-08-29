@@ -45,28 +45,27 @@ def feed_back_pro(game: Game):
 def feed_explorer():
     nl.gain = 0.5
     nl.calculate_hidden_layer()
-    nl.gain = 1.5
+    nl.gain = 1.5  # 0.5 - 1.0
     nl.calculate_output_layer()
 
 
-def search_for_max(game: Game, gamma=0.75):
+def search_for_max(game: Game):
     grid = game.grid
     for i in range(7):
         if grid[0][i] == BLANK_CHAR:
             game.make_move(i, game.players[0])
-            fill_inputs(game)
-            feed_explorer()
-            search_winner_neuron()
-            nl.target[i] = nl.out_layer.out[nl.net_winner] * gamma
             winner = game.get_winner()
-            if winner == game.players[0]:
-                nl.target[i] = 1.0
             game.unmake_move(i)
-        else:
+            if winner == game.players[0]:
+                for j in range(7):
+                    nl.target[j] = 0.0
+                nl.target[i] = 1.0
+                fill_inputs(game)
+                feed_explorer()
             nl.target[i] = 0.0
 
 
-def set_targets(game: Game, gamma=0.75):
+def set_targets(game: Game):
     grid = game.grid
     for i in range(7):
         if grid[0][i] == BLANK_CHAR:

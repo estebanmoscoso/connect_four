@@ -10,14 +10,17 @@ N_HID = (N_IN + N_OUT)//2  # TO DO: Get a more appropriate value
 
 mid = 0.5
 eta = 0.125
+
+
 gain = 1.5
-alpha = 0.5
+alpha = 0.25
 target = [0 for _ in range(N_OUT)]
 counselor_out = [0 for _ in range(N_OUT)]
 inputs = [0 for _ in range(N_IN)]
 peak_value = 0
 net_winner = 0
 backpropagation_count = 0
+BLANK_CHAR = ' '
 
 
 class OutLayer:
@@ -76,8 +79,8 @@ def fix_all_weights():
     for k in range(N_OUT):
         for i in range(N_HID):
             delta = eta * out_layer.error[k] * hidden_layer.out[i]
-            out_layer.weights[k][i] = hidden_layer.weights[k][i] + delta + (alpha * hidden_layer.moment[k][i])
-
+            out_layer.weights[k][i] = hidden_layer.weights[k][i] + delta + (alpha * out_layer.moment[k][i])
+            out_layer.moment[k][i] = delta
     # Fixing weights of hidden layer
     for k in range(N_HID):
         for i in range(N_IN):
@@ -87,6 +90,11 @@ def fix_all_weights():
 
 
 def sigmoid(x: float):
+    # print('x', x)
+    if x < -30:
+        x = -30
+    if x > 30:
+        x = 30
     out = 1/(1 + exp(-gain * x))
     return out
 
