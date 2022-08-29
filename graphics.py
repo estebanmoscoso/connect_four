@@ -23,6 +23,7 @@ class Window:
         self.target_canvas = None
         self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(60)] for _ in range(11)]
         self.neuronas_entrada_canvas = [Canvas(width=6, height=6, bg='gray') for _ in range(len(inputs)-6)]
+        self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='blue') for _ in range(N_HID*2)]
         self.best_move_toggle = False
         self.start()
 
@@ -33,6 +34,7 @@ class Window:
         self.render_target_bars()
         self.render_hidden_weights()
         self.render_input_neurons()
+        self.render_hidden_neurons()
     
     def end(self):
         self.root.mainloop()
@@ -75,6 +77,31 @@ class Window:
             x+=7
             
             
+    def change_input_neurons(self):
+        for i in range(len(self.neuronas_entrada_canvas)):
+            if inputs[i] == 1:
+                self.neuronas_entrada_canvas[i].configure(bg='green') 
+            else:
+                self.neuronas_entrada_canvas[i].configure(bg='gray') 
+                           
+                           
+                           
+    def render_hidden_neurons(self,x = 470, y = 310):
+        for i in range(0,len(self.neuronas_entrada_canvas),2):
+            self.neuronas_escondidas_canvas[i].place(x = x, y = y)
+            self.neuronas_escondidas_canvas[i].configure(bg='deep pink') 
+            self.neuronas_escondidas_canvas[i+1].place(x = x, y = y)
+            self.neuronas_escondidas_canvas[i+1].configure(bg='light grey') 
+            x+=4
+                     
+    def change_hidden_neurons(self):
+        for i in range(N_HID):
+            print(hidden_layer.out[i])
+            m = max(hidden_layer.out)
+            if hidden_layer.out[i] > 0:
+                self.neuronas_escondidas_canvas[i*2+1].configure(height=50*hidden_layer.out[i]/m) 
+            else:
+                self.neuronas_escondidas_canvas[i*2+1].configure(height=50) 
 
         
     def render_grid(self, x_offset=20, y_offset=20):
@@ -159,6 +186,7 @@ class Window:
                     if self.game.b_flag:
                         feed_back_pro(self.game)
                         if self.render_flag:
+                            self.change_hidden_neurons()
                             self.change_color_hidden_weights()
                 i = -1
                 if self.best_move_toggle:
