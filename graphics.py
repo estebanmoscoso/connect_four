@@ -24,6 +24,7 @@ class Window:
         self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(60)] for _ in range(11)]
         self.neuronas_entrada_canvas = [Canvas(width=6, height=6, bg='gray') for _ in range(len(inputs)-6)]
         self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='blue') for _ in range(N_HID*2)]
+        self.neuronas_salida_canvas = [Canvas(width=5, height=50, bg='blue violet') for _ in range(N_OUT*2)]
         self.best_move_toggle = False
         self.start()
 
@@ -35,6 +36,7 @@ class Window:
         self.render_hidden_weights()
         self.render_input_neurons()
         self.render_hidden_neurons()
+        self.render_out_neurons()
     
     def end(self):
         self.root.mainloop()
@@ -87,9 +89,8 @@ class Window:
                      
     def change_hidden_neurons(self):
         for i in range(N_HID):
-            #print(hidden_layer.out[i])
             if hidden_layer.out[i] > 0:
-                self.neuronas_escondidas_canvas[i*2+1].configure(height=50 - 50*hidden_layer.out[i]/1) 
+                self.neuronas_escondidas_canvas[i*2+1].configure(height=50 - 50*hidden_layer.out[i]) 
             else:
                 self.neuronas_escondidas_canvas[i*2+1].configure(height=50) 
                 
@@ -97,7 +98,23 @@ class Window:
         for i in range(N_HID):
             self.neuronas_escondidas_canvas[i*2].configure(bg=color) 
             
+
+    
+    def render_out_neurons(self,x = 480, y = 240):
+        for i in range(0,len(self.neuronas_salida_canvas),2):
+            self.neuronas_salida_canvas[i].place(x = x, y = y)
+            self.neuronas_salida_canvas[i].configure(bg='dark violet') 
+            self.neuronas_salida_canvas[i+1].place(x = x, y = y)
+            self.neuronas_salida_canvas[i+1].configure(bg='light grey') 
+            x+=14
             
+    def change_out_neurons(self):
+        for i in range(N_OUT):
+            if out_layer.out[i] > 0:
+                self.neuronas_salida_canvas[i*2+1].configure(height=50 - 50*out_layer.out[i]) 
+            else:
+                self.neuronas_salida_canvas[i*2+1].configure(height=50) 
+    
         
         
     def render_grid(self, x_offset=20, y_offset=20):
@@ -160,6 +177,10 @@ class Window:
         label.place(x=x_offset + 170, y=y_offset + 150)
 
     def render_target_bars(self):
+        o_learns.fill_inputs(self.game)
+        nl.calculate_hidden_layer()
+        nl.calculate_output_layer()
+        self.change_out_neurons()
         barchart.create(self.root, nl.out_layer.out)
 
     def update_target_values(self):
@@ -198,8 +219,8 @@ class Window:
 
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
-                    # if self.game.current_player == self.game.players[0] and not self.game.game_over:
-                    #     self.render_target_bars()
+                    if self.game.current_player == self.game.players[0] and not self.game.game_over:
+                        self.render_target_bars()
             else:
                 self.game.restart()
                 self.update_grid()
