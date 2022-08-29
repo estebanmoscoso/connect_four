@@ -12,7 +12,7 @@ import time
 class Window:
     def __init__(self, game):
         self.root = Tk()
-        self.root.title("HOLA")
+        self.root.title("Connect Four")
         self.game = game
         self.grid_vars = [[StringVar() for _ in range(7)] for _ in range(6)]
         self.game_stats_var = StringVar()
