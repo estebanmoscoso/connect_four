@@ -95,11 +95,12 @@ class Window:
             x+=4
                      
     def change_hidden_neurons(self):
+        print("####################### kdsajfdsa kjds")
         for i in range(N_HID):
             print(hidden_layer.out[i])
             m = max(hidden_layer.out)
             if hidden_layer.out[i] > 0:
-                self.neuronas_escondidas_canvas[i*2+1].configure(height=50*hidden_layer.out[i]/m) 
+                self.neuronas_escondidas_canvas[i*2+1].configure(height=50 - 50*hidden_layer.out[i]/1) 
             else:
                 self.neuronas_escondidas_canvas[i*2+1].configure(height=50) 
 
