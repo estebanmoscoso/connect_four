@@ -74,16 +74,7 @@ class Window:
             c+=1
             if c%3 == 0:
                 x+=5
-            x+=7
-            
-            
-    def change_input_neurons(self):
-        for i in range(len(self.neuronas_entrada_canvas)):
-            if inputs[i] == 1:
-                self.neuronas_entrada_canvas[i].configure(bg='green') 
-            else:
-                self.neuronas_entrada_canvas[i].configure(bg='gray') 
-                           
+            x+=7                      
                            
                            
     def render_hidden_neurons(self,x = 470, y = 310):
@@ -97,12 +88,17 @@ class Window:
     def change_hidden_neurons(self):
         for i in range(N_HID):
             #print(hidden_layer.out[i])
-            m = max(hidden_layer.out)
             if hidden_layer.out[i] > 0:
                 self.neuronas_escondidas_canvas[i*2+1].configure(height=50 - 50*hidden_layer.out[i]/1) 
             else:
                 self.neuronas_escondidas_canvas[i*2+1].configure(height=50) 
-
+                
+    def change_color_hidden_neurons(self, color):
+        for i in range(N_HID):
+            self.neuronas_escondidas_canvas[i*2].configure(bg=color) 
+            
+            
+        
         
     def render_grid(self, x_offset=20, y_offset=20):
         grid = self.game.grid
@@ -248,7 +244,12 @@ class Window:
         elif c == 'b':
             self.game.b_flag = not self.game.b_flag
             self.update_game_stats()
-
+            if self.game.b_flag: 
+                if self.render_flag:
+                    self.change_color_hidden_neurons('red')
+            else: 
+                self.change_color_hidden_neurons('deep pink')
+                
         elif c == ' ':
             self.game.space_flag = not self.game.space_flag
 
