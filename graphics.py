@@ -2,7 +2,7 @@ from tkinter import *
 
 import barchart
 import o_learns
-from o_learns import feed_back_pro
+from o_learns import feed_back_pro, fill_inputs
 import neural_lib as nl
 from save_weights import *
 import threading
@@ -21,8 +21,8 @@ class Window:
         self.render_flag = True
         self.target_bars = []
         self.target_canvas = None
-        self.pesos_canvas = [[Canvas(width=3, height=3, bg="gray") for _ in range(60)] for i in range(11)]
-        self.neuronas_entrada = [[Canvas(width=4, height=16, bg='white') for _ in range(len(inputs))]]
+        self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(60)] for i in range(11)]
+        self.neuronas_entrada_canvas = [Canvas(width=6, height=6, bg='gray') for _ in range(len(inputs)-6)]
         self.best_move_toggle = False
         self.start()
 
@@ -32,6 +32,7 @@ class Window:
         self.render_game_stats()
         self.render_target_bars()
         self.render_hidden_weights()
+        self.render_input_neurons()
     
     def end(self):
         self.root.mainloop()
@@ -47,28 +48,34 @@ class Window:
                 else:
                     self.pesos_canvas[fila][columna].configure(bg='gray') 
                     
-        
     def render_hidden_weights(self,x = 50, y = 300):
+        c = 0
         for fila in range(len(self.pesos_canvas)):
             for columna in range(len(self.pesos_canvas[0])):
+                c+=1
                 self.pesos_canvas[fila][columna].place(x = x, y = y)
-                x+= 5
-            x = 50; y += 5
+                x+= 6
+            x = 50; y += 6    
+
+
+    def change_input_neurons(self):
+        for i in range(len(self.neuronas_entrada_canvas)):
+            if inputs[i] == 1:
+                self.neuronas_entrada_canvas[i].configure(bg='green') 
+            else:
+                self.neuronas_entrada_canvas[i].configure(bg='gray') 
+                           
+    def render_input_neurons(self,x = 30, y = 450):
+        c = 0
+        for i in range(len(self.neuronas_entrada_canvas)):
+            self.neuronas_entrada_canvas[i].place(x = x, y = y)
+            c+=1
+            if c%3 == 0:
+                x+=5
+            x+=7
             
             
-    def render_input_neurons(self,x = 50, y = 500):
-        #print(len(hidden_layer.weights),len(hidden_layer.weights[0]))
-        for fila in range(len(self.pesos_canvas)):
-            for columna in range(len(self.pesos_canvas[0])):
-                self.pesos_canvas[fila][columna].place(x = x, y = y)
-                if hidden_layer.weights[fila][columna] > 0.001:
-                    self.pesos_canvas[fila][columna].configure(bg='red')
-                elif hidden_layer.weights[fila][columna] < -0.001:
-                    self.pesos_canvas[fila][columna].configure(bg='blue')
-                else:
-                    self.pesos_canvas[fila][columna].configure(bg='gray') 
-                x+= 5
-            x = 50; y += 5
+
         
     def render_grid(self, x_offset=20, y_offset=20):
         grid = self.game.grid
@@ -156,6 +163,9 @@ class Window:
                 if self.best_move_toggle:
                     i = self.get_best_move()
                 self.game.play_one_turn(i)
+                fill_inputs(self.game)
+                self.change_input_neurons()
+                
                 if self.game.current_player == self.game.players[0]:
                     o_learns.set_targets(self.game)
                 #time.sleep(0.02)
@@ -192,6 +202,9 @@ class Window:
 
                 print(self.game.grid)
                 self.game.play_one_turn(i)
+                fill_inputs(self.game)
+                self.change_input_neurons()
+                
                 if self.game.current_player == self.game.players[0]:
                     o_learns.set_targets(self.game)
                 if self.render_flag:
@@ -218,6 +231,9 @@ class Window:
                     if self.render_flag:
                         self.render_target_bars()
                 self.game.play_one_turn(int(e.char))
+                fill_inputs(self.game)
+                self.change_input_neurons()
+                
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
 
@@ -245,6 +261,8 @@ class Window:
             init_weights()
             self.change_color_hidden_weights()
             print('Pesos randomizados')
+            
+            
 
             
             
