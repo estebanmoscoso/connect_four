@@ -212,8 +212,8 @@ class Window:
                 if self.render_flag:
                     self.change_input_neurons()
                 
-                if self.game.current_player == self.game.players[0]:
-                    o_learns.set_targets(self.game)
+                #if self.game.current_player == self.game.players[0]:
+                #    o_learns.set_targets(self.game)
                 #time.sleep(0.02)
 
                 if self.render_flag:
@@ -255,8 +255,8 @@ class Window:
                 fill_inputs(self.game)
                 if self.render_flag:
                     self.change_input_neurons()
-                if self.game.current_player == self.game.players[0]:
-                    o_learns.set_targets(self.game)
+                #if self.game.current_player == self.game.players[0]:
+                #    o_learns.set_targets(self.game)
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
                     if self.game.current_player == self.game.players[0] and not self.game.game_over:
@@ -269,6 +269,7 @@ class Window:
                     self.change_color_hidden_neurons('red')
             else:
                 self.change_color_hidden_neurons('deep pink')
+
 
         elif c == ' ':
             self.game.space_flag = not self.game.space_flag
@@ -316,8 +317,11 @@ class Window:
             
         elif c == 'r':
             init_weights()
+            o_learns.feed_explorer()
+            print(out_layer.out)
             if self.render_flag:
                 self.change_color_hidden_weights()
+                self.change_out_neurons()
             print('Pesos randomizados')
             
             

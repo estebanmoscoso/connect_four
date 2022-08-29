@@ -4,15 +4,15 @@ ROWS = 6
 COLUMNS = 7
 GRID_SIZE = ROWS*COLUMNS
 N_MOVES = 6
-N_IN = GRID_SIZE*3 + N_MOVES
+N_IN = GRID_SIZE*3 #+ #N_MOVES
 N_OUT = COLUMNS
 N_HID = int(N_IN * 2/3) + N_OUT  # TO DO: Get a more appropriate value
 
 # mid = 0.5
-eta = 0.125 / 120
-hidden_gain = 0.5
+eta = 0.1 #0.25 
+hidden_gain = 0.1 #0.01  #Primer testeo hg=0.45
 output_gain = 1.5
-alpha = 0.25
+alpha = 0.5
 
 
 target = [0 for _ in range(N_OUT)]
@@ -52,7 +52,7 @@ def init_weights():
     for k in range(N_HID):
         for i in range(N_IN):
             hidden_layer.weights[k][i] = get_random_weight()
-        
+            #hidden_layer.weights[k][i] = 0
     for k in range(N_OUT):
         for i in range(N_HID):
             out_layer.weights[k][i] = get_random_weight()
