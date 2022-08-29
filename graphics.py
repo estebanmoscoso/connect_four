@@ -21,33 +21,54 @@ class Window:
         self.render_flag = True
         self.target_bars = []
         self.target_canvas = None
-        self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(126)] for i in range(11)]
+        self.pesos_canvas = [[Canvas(width=3, height=3, bg="gray") for _ in range(60)] for i in range(11)]
+        self.neuronas_entrada = [[Canvas(width=4, height=16, bg='white') for _ in range(len(inputs))]]
         self.best_move_toggle = False
         self.start()
 
     def start(self):
         self.root.bind("<KeyPress>", self.key_listener)
         self.render_grid()
-        #self.pesos_canvas.place(x=50,y=0)
-        #self.pesos_canvas2.place(x=57,y=0)
         self.render_game_stats()
         self.render_target_bars()
-        self.pesos()
+        self.render_hidden_weights()
     
     def end(self):
         self.root.mainloop()
+
+    
+    def change_color_hidden_weights(self):
+        for fila in range(len(self.pesos_canvas)):
+            for columna in range(len(self.pesos_canvas[0])):
+                if hidden_layer.weights[fila][columna] > 0.001:
+                    self.pesos_canvas[fila][columna].configure(bg='red')
+                elif hidden_layer.weights[fila][columna] < -0.001:
+                    self.pesos_canvas[fila][columna].configure(bg='blue')
+                else:
+                    self.pesos_canvas[fila][columna].configure(bg='gray') 
+                    
         
-    def pesos(self,x = 50, y = 300):
-        print(len(hidden_layer.weights),len(hidden_layer.weights[0]))
+    def render_hidden_weights(self,x = 50, y = 300):
+        for fila in range(len(self.pesos_canvas)):
+            for columna in range(len(self.pesos_canvas[0])):
+                self.pesos_canvas[fila][columna].place(x = x, y = y)
+                x+= 5
+            x = 50; y += 5
+            
+            
+    def render_input_neurons(self,x = 50, y = 500):
+        #print(len(hidden_layer.weights),len(hidden_layer.weights[0]))
         for fila in range(len(self.pesos_canvas)):
             for columna in range(len(self.pesos_canvas[0])):
                 self.pesos_canvas[fila][columna].place(x = x, y = y)
                 if hidden_layer.weights[fila][columna] > 0.001:
                     self.pesos_canvas[fila][columna].configure(bg='red')
-                if hidden_layer.weights[fila][columna] < -0.001:
+                elif hidden_layer.weights[fila][columna] < -0.001:
                     self.pesos_canvas[fila][columna].configure(bg='blue')
-                x+=6
-            x = 50; y += 6
+                else:
+                    self.pesos_canvas[fila][columna].configure(bg='gray') 
+                x+= 5
+            x = 50; y += 5
         
     def render_grid(self, x_offset=20, y_offset=20):
         grid = self.game.grid
@@ -130,14 +151,14 @@ class Window:
                 if self.game.current_player == self.game.players[0]:
                     if self.game.b_flag:
                         feed_back_pro(self.game)
-                        self.pesos()
+                        self.change_color_hidden_weights()
                 i = -1
                 if self.best_move_toggle:
                     i = self.get_best_move()
                 self.game.play_one_turn(i)
                 if self.game.current_player == self.game.players[0]:
                     o_learns.set_targets(self.game)
-                time.sleep(0.02)
+                #time.sleep(0.02)
 
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
@@ -155,7 +176,6 @@ class Window:
 
     def key_listener(self, e):
         c = e.char
-
         if self.game.game_over and c in ['p', ' ', '0', '1', '2', '3', '4', '5', '6']:
             self.game.restart()
             self.update_game_stats()
@@ -169,6 +189,8 @@ class Window:
                 if self.game.current_player == self.game.players[0]:
                     if self.game.b_flag:
                         feed_back_pro(self.game)
+
+                print(self.game.grid)
                 self.game.play_one_turn(i)
                 if self.game.current_player == self.game.players[0]:
                     o_learns.set_targets(self.game)
@@ -217,12 +239,12 @@ class Window:
         elif c == 'c':
             cargar_pesos()
             print('Pesos Cargados')
-            self.pesos()
+            self.change_color_hidden_weights()
             
         elif c == 'r':
             init_weights()
-            self.pesos()
+            self.change_color_hidden_weights()
             print('Pesos randomizados')
-            
+
             
             

@@ -23,7 +23,7 @@ def fill_inputs(game: Game):
                 nl.inputs[i] = 0
                 nl.inputs[i+1] = 0
                 nl.inputs[i+2] = 1
-            if grid[k][j] == '-':
+            if grid[k][j] == BLANK_CHAR:
                 nl.inputs[i] = 0
                 nl.inputs[i+1] = 1
                 nl.inputs[i+2] = 0
