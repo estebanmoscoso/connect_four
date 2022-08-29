@@ -183,6 +183,9 @@ class Window:
 
     def get_best_move(self):
         if self.game.current_player == self.game.players[0]:
+            o_learns.fill_inputs(self.game)
+            nl.calculate_output_layer()
+            o_learns.search_winner_neuron()
             return nl.net_winner
         return -1
 
