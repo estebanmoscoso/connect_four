@@ -23,7 +23,7 @@ class Window:
         self.target_canvas = None
         self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(60)] for _ in range(11)]
         self.neuronas_entrada_canvas = [Canvas(width=6, height=6, bg='gray') for _ in range(len(inputs)-6)]
-        self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='blue') for _ in range(N_HID*2)]
+        self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='deep pink') for _ in range(N_HID*2)]
         self.neuronas_salida_canvas = [Canvas(width=5, height=50, bg='blue violet') for _ in range(N_OUT*2)]
         self.best_move_toggle = False
         self.start()
@@ -82,7 +82,7 @@ class Window:
     def render_hidden_neurons(self,x = 470, y = 310):
         for i in range(0,len(self.neuronas_entrada_canvas),2):
             self.neuronas_escondidas_canvas[i].place(x = x, y = y)
-            self.neuronas_escondidas_canvas[i].configure(bg='deep pink') 
+            #self.neuronas_escondidas_canvas[i].configure(bg='deep pink') 
             self.neuronas_escondidas_canvas[i+1].place(x = x, y = y)
             self.neuronas_escondidas_canvas[i+1].configure(bg='light grey') 
             x+=4
@@ -103,7 +103,7 @@ class Window:
     def render_out_neurons(self,x = 480, y = 240):
         for i in range(0,len(self.neuronas_salida_canvas),2):
             self.neuronas_salida_canvas[i].place(x = x, y = y)
-            self.neuronas_salida_canvas[i].configure(bg='dark violet') 
+            #self.neuronas_salida_canvas[i].configure(bg='blue violet') 
             self.neuronas_salida_canvas[i+1].place(x = x, y = y)
             self.neuronas_salida_canvas[i+1].configure(bg='light grey') 
             x+=14
@@ -181,7 +181,7 @@ class Window:
         nl.calculate_hidden_layer()
         nl.calculate_output_layer()
         self.change_out_neurons()
-        barchart.create(self.root, nl.out_layer.out)
+        #barchart.create(self.root, nl.out_layer.out)
 
     def update_target_values(self):
         self.target_var.set(f'Targets:\n'
