@@ -6,14 +6,15 @@ GRID_SIZE = ROWS*COLUMNS
 N_MOVES = 6
 N_IN = GRID_SIZE*3 + N_MOVES
 N_OUT = COLUMNS
-N_HID = (N_IN + N_OUT)//2  # TO DO: Get a more appropriate value
+N_HID = int(N_IN * 2/3) + N_OUT  # TO DO: Get a more appropriate value
 
-mid = 0.5
-eta = 0.125
-
-
-gain = 1.5
+# mid = 0.5
+eta = 0.125 / 120
+hidden_gain = 0.5
+output_gain = 1.5
 alpha = 0.25
+
+
 target = [0 for _ in range(N_OUT)]
 counselor_out = [0 for _ in range(N_OUT)]
 inputs = [0 for _ in range(N_IN)]
@@ -89,7 +90,7 @@ def fix_all_weights():
             hidden_layer.moment[k][i] = delta
 
 
-def sigmoid(x: float):
+def sigmoid(x: float, gain):
     # print('x', x)
     if x < -30:
         x = -30
@@ -104,7 +105,7 @@ def calculate_hidden_layer():
         hidden_layer.out[k] = 0
         for i in range(N_IN):
             hidden_layer.out[k] += hidden_layer.weights[k][i] * inputs[i]
-        hidden_layer.out[k] = sigmoid(hidden_layer.out[k])
+        hidden_layer.out[k] = sigmoid(hidden_layer.out[k], hidden_gain)
 
 
 def calculate_output_layer():
@@ -113,7 +114,7 @@ def calculate_output_layer():
         if inputs[3*k+1] == 1:
             for i in range(N_HID):
                 out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
-            out_layer.out[k] = sigmoid(out_layer.out[k])
+            out_layer.out[k] = sigmoid(out_layer.out[k], output_gain)
 
 
 def inject_noise_weights():

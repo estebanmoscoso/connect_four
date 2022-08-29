@@ -43,9 +43,7 @@ def feed_back_pro(game: Game):
 
 
 def feed_explorer():
-    nl.gain = 0.5
     nl.calculate_hidden_layer()
-    nl.gain = 1.5  # 0.5 - 1.0
     nl.calculate_output_layer()
 
 
@@ -57,8 +55,6 @@ def search_for_max(game: Game):
             winner = game.get_winner()
             game.unmake_move(i)
             if winner == game.players[0]:
-                for j in range(7):
-                    nl.target[j] = 0.0
                 nl.target[i] = 1.0
                 fill_inputs(game)
                 feed_explorer()
