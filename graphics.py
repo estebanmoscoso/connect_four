@@ -23,7 +23,8 @@ class Window:
         self.target_canvas = None
         self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(60)] for _ in range(11)]
         self.neuronas_entrada_canvas = [Canvas(width=6, height=6, bg='gray') for _ in range(len(inputs)-6)]
-        self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='blue') for _ in range(N_HID*2)]
+        self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='deep pink') for _ in range(N_HID*2)]
+        self.neuronas_salida_canvas = [Canvas(width=5, height=50, bg='blue violet') for _ in range(N_OUT*2)]
         self.best_move_toggle = False
         self.start()
 
@@ -35,6 +36,7 @@ class Window:
         self.render_hidden_weights()
         self.render_input_neurons()
         self.render_hidden_neurons()
+        self.render_out_neurons()
     
     def end(self):
         self.root.mainloop()
@@ -74,35 +76,46 @@ class Window:
             c+=1
             if c%3 == 0:
                 x+=5
-            x+=7
-            
-            
-    def change_input_neurons(self):
-        for i in range(len(self.neuronas_entrada_canvas)):
-            if inputs[i] == 1:
-                self.neuronas_entrada_canvas[i].configure(bg='green') 
-            else:
-                self.neuronas_entrada_canvas[i].configure(bg='gray') 
-                           
+            x+=7                      
                            
                            
     def render_hidden_neurons(self,x = 470, y = 310):
         for i in range(0,len(self.neuronas_entrada_canvas),2):
             self.neuronas_escondidas_canvas[i].place(x = x, y = y)
-            self.neuronas_escondidas_canvas[i].configure(bg='deep pink') 
+            #self.neuronas_escondidas_canvas[i].configure(bg='deep pink') 
             self.neuronas_escondidas_canvas[i+1].place(x = x, y = y)
             self.neuronas_escondidas_canvas[i+1].configure(bg='light grey') 
             x+=4
                      
     def change_hidden_neurons(self):
         for i in range(N_HID):
-            #print(hidden_layer.out[i])
-            m = max(hidden_layer.out)
             if hidden_layer.out[i] > 0:
-                self.neuronas_escondidas_canvas[i*2+1].configure(height=50 - 50*hidden_layer.out[i]/1) 
+                self.neuronas_escondidas_canvas[i*2+1].configure(height=50 - 50*hidden_layer.out[i]) 
             else:
                 self.neuronas_escondidas_canvas[i*2+1].configure(height=50) 
+                
+    def change_color_hidden_neurons(self, color):
+        for i in range(N_HID):
+            self.neuronas_escondidas_canvas[i*2].configure(bg=color) 
+            
 
+    
+    def render_out_neurons(self,x = 480, y = 240):
+        for i in range(0,len(self.neuronas_salida_canvas),2):
+            self.neuronas_salida_canvas[i].place(x = x, y = y)
+            #self.neuronas_salida_canvas[i].configure(bg='blue violet') 
+            self.neuronas_salida_canvas[i+1].place(x = x, y = y)
+            self.neuronas_salida_canvas[i+1].configure(bg='light grey') 
+            x+=14
+            
+    def change_out_neurons(self):
+        for i in range(N_OUT):
+            if out_layer.out[i] > 0:
+                self.neuronas_salida_canvas[i*2+1].configure(height=50 - 50*out_layer.out[i]) 
+            else:
+                self.neuronas_salida_canvas[i*2+1].configure(height=50) 
+    
+        
         
     def render_grid(self, x_offset=20, y_offset=20):
         grid = self.game.grid
@@ -164,7 +177,11 @@ class Window:
         label.place(x=x_offset + 170, y=y_offset + 150)
 
     def render_target_bars(self):
-        barchart.create(self.root, nl.out_layer.out)
+        o_learns.fill_inputs(self.game)
+        nl.calculate_hidden_layer()
+        nl.calculate_output_layer()
+        self.change_out_neurons()
+        #barchart.create(self.root, nl.out_layer.out)
 
     def update_target_values(self):
         self.target_var.set(f'Targets:\n'
@@ -202,8 +219,8 @@ class Window:
 
                 if self.render_flag:
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
-                    # if self.game.current_player == self.game.players[0] and not self.game.game_over:
-                    #     self.render_target_bars()
+                    if self.game.current_player == self.game.players[0] and not self.game.game_over:
+                        self.render_target_bars()
             else:
                 self.game.restart()
                 self.update_grid()
@@ -248,7 +265,12 @@ class Window:
         elif c == 'b':
             self.game.b_flag = not self.game.b_flag
             self.update_game_stats()
-
+            if self.game.b_flag: 
+                if self.render_flag:
+                    self.change_color_hidden_neurons('red')
+            else: 
+                self.change_color_hidden_neurons('deep pink')
+                
         elif c == ' ':
             self.game.space_flag = not self.game.space_flag
 
