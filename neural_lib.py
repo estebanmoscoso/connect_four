@@ -102,9 +102,10 @@ def calculate_hidden_layer():
 def calculate_output_layer():
     for k in range(N_OUT):
         out_layer.out[k] = 0
-        for i in range(N_HID):
-            out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
-        out_layer.out[k] = sigmoid(out_layer.out[k])
+        if inputs[3*k+1] == 1:
+            for i in range(N_HID):
+                out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
+            out_layer.out[k] = sigmoid(out_layer.out[k])
 
 
 def inject_noise_weights():
