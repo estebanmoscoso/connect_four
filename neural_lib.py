@@ -9,8 +9,8 @@ N_OUT = COLUMNS
 N_HID = int(N_IN * 2/3) + N_OUT  # TO DO: Get a more appropriate value
 
 # mid = 0.5
-eta = 0.1 #0.25 
-hidden_gain = 0.1 #0.01  #Primer testeo hg=0.45
+eta = 0.25 #0.25 
+hidden_gain = 0.5 #0.01  #Primer testeo hg=0.45
 output_gain = 1.5
 alpha = 0.5
 
@@ -73,15 +73,17 @@ def fix_all_weights():
     for k in range(N_HID):
         s = 0
         for i in range(N_OUT):
-            s += out_layer.error[i] + out_layer.weights[i][k]
+            s += out_layer.error[i]*out_layer.weights[i][k]
         hidden_layer.error[k] = hidden_layer.out[k] * (1-hidden_layer.out[k]) * s
 
     # Fixing weights of output layer
     for k in range(N_OUT):
         for i in range(N_HID):
             delta = eta * out_layer.error[k] * hidden_layer.out[i]
-            out_layer.weights[k][i] = hidden_layer.weights[k][i] + delta + (alpha * out_layer.moment[k][i])
+            out_layer.weights[k][i] = out_layer.weights[k][i] + delta + (alpha * out_layer.moment[k][i])
             out_layer.moment[k][i] = delta
+            
+            
     # Fixing weights of hidden layer
     for k in range(N_HID):
         for i in range(N_IN):
@@ -111,27 +113,10 @@ def calculate_hidden_layer():
 def calculate_output_layer():
     for k in range(N_OUT):
         out_layer.out[k] = 0
-        if inputs[3*k+1] == 1:
-            for i in range(N_HID):
-                out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
-            out_layer.out[k] = sigmoid(out_layer.out[k], output_gain)
-
-
-def inject_noise_weights():
-    # Noise injection for hidden layer
-    for k in range(N_HID):
-        for i in range(N_IN):
-            dice = randrange(10)
-            if dice == 0:
-                tmp = randrange(-50, 51)
-                tmp = tmp // 100
-                hidden_layer.weights[k][i] = tmp
-
-    # Noise injection for output layer
-    for k in range(N_OUT):
         for i in range(N_HID):
-            dice = randrange(10)
-            if dice == 0:
-                tmp = randrange(-50, 51)
-                tmp = tmp // 100
-                out_layer.weights[k][i] = tmp
+            out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
+        out_layer.out[k] = sigmoid(out_layer.out[k], output_gain)
+        #print(out_layer.out[k])
+    print(out_layer.out)
+
+

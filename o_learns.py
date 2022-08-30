@@ -1,6 +1,6 @@
 import neural_lib as nl
 from game import Game
-
+import time
 BLANK_CHAR = ' '
 
 
@@ -31,10 +31,6 @@ def fill_inputs(game: Game):
                 nl.inputs[i] = 1
                 nl.inputs[i+1] = 0
                 nl.inputs[i+2] = 0
-    # for i in range(6):
-    #     k = moves_counter & (1 << i)
-    #     nl.inputs[nl.GRID_SIZE * 3 + i] = 1.0 if (k > 0) else 0.0
-
 
 def feed_back_pro(game: Game):
     search_for_max(game)
@@ -71,23 +67,32 @@ def search_for_max(game: Game):
             winner = game.get_winner()
             game.unmake_move(i)
             if winner == game.players[0]:
+                print(f'Winner position in column {i}.')
                 #game.unmake_move(i)
                 for j in range(nl.N_OUT):
                     nl.target[j] = 0.0
-                #nl.target[i] = 1.0
+                nl.target[i] = 1.0
+                print("\n1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1")
                 print(nl.target)
                 #print(game.grid)
                 fill_inputs(game)
-                # for j in range(len(nl.inputs)):
-                #     if j%21 == 0:
-                #         print('\n')
-                #     if (j+1)%3 == 0:
-                #         print(nl.inputs[j], end = ' ')
-                #     else:
-                #         print(nl.inputs[j], end = '') 
-                # print("\n111111111111111###############################################")
+                
+                
+                for j in range(len(nl.inputs)):
+                    if j%21 == 0:
+                        print('\n')
+                    if (j+1)%3 == 0:
+                        print(nl.inputs[j], end = ' ')
+                    else:
+                        print(nl.inputs[j], end = '') 
+                
+                
+                
+                
+                print('-------------------------------------------------------------')
                 feed_explorer()
                 nl.target[i] = 0.0
+                #time.sleep(4)
 
 def set_targets(game: Game):
     # grid = game.grid
@@ -102,28 +107,32 @@ def set_targets(game: Game):
     #         game.unmake_move(i)
     #     else:
     #         nl.target[i] = 0.0
-    grid = game.grid
-    for i in range(7):
-        if grid[0][i] == BLANK_CHAR:
-            game.make_move(i, game.players[0])
-            winner = game.get_winner()
-            game.unmake_move(i)
-            if winner == game.players[0]:
-                #game.unmake_move(i)
-                for j in range(nl.N_OUT):
-                    nl.target[j] = 0.0
-                nl.target[i] = 1.0
-                print(nl.target)
-                print(game.grid)
-                fill_inputs(game)
-                for j in range(len(nl.inputs)):
-                    if j%21 == 0:
-                        print('\n')
-                    if (j+1)%3 == 0:
-                        print(nl.inputs[j], end = ' ')
-                    else:
-                        print(nl.inputs[j], end = '') 
-                print("\n2222222###############################################")
-                feed_explorer()
-                nl.target[i] = 0.0
+    # grid = game.grid
+    # for i in range(7):
+    #     if grid[0][i] == BLANK_CHAR:
+    #         game.make_move(i, game.players[0])
+    #         winner = game.get_winner()
+    #         game.unmake_move(i)
+    #         if winner == game.players[0]:
+    #             #game.unmake_move(i)
+    #             for j in range(nl.N_OUT):
+    #                 nl.target[j] = 0.0
+    #             nl.target[i] = 1.0
+    #             print("\n2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2")
+    #             print(nl.target)
+    #             print(game.grid)
+    #             fill_inputs(game)
+    #             # for j in range(len(nl.inputs)):
+    #             #     if j%21 == 0:
+    #             #         print('\n')
+    #             #     if (j+1)%3 == 0:
+    #             #         print(nl.inputs[j], end = ' ')
+    #             #     else:
+    #             #         print(nl.inputs[j], end = '') 
+    #             print("\n###############################################")
+    #             feed_explorer()
+    #             nl.target[i] = 0.0
+                
+    #             #time.sleep(4)
 
+    pass
