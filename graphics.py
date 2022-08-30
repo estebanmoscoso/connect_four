@@ -80,7 +80,7 @@ class Window:
                            
 
     def render_hidden_neurons(self,x = 470, y = 310):
-        for i in range(0,len(self.neuronas_entrada_canvas),2):
+        for i in range(0,len(self.neuronas_escondidas_canvas),2):
             self.neuronas_escondidas_canvas[i].place(x = x, y = y)
             #self.neuronas_escondidas_canvas[i].configure(bg='deep pink')
             self.neuronas_escondidas_canvas[i+1].place(x = x, y = y)

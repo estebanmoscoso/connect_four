@@ -7,7 +7,7 @@ N_MOVES = 6
 N_IN = GRID_SIZE*3 #+ #N_MOVES
 N_OUT = COLUMNS
 N_HID = int(N_IN * 2/3) + N_OUT  # TO DO: Get a more appropriate value
-
+N_HID = 41
 # mid = 0.5
 eta = 0.25 #0.25 
 hidden_gain = 0.5 #0.01  #Primer testeo hg=0.45
@@ -102,7 +102,7 @@ def sigmoid(x: float, gain):
     return out
 
 
-def calculate_hidden_layer():
+def  calculate_hidden_layer():
     for k in range(N_HID):
         hidden_layer.out[k] = 0
         for i in range(N_IN):
@@ -116,7 +116,6 @@ def calculate_output_layer():
         for i in range(N_HID):
             out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
         out_layer.out[k] = sigmoid(out_layer.out[k], output_gain)
-        #print(out_layer.out[k])
     print(out_layer.out)
-
+ 
 
