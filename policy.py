@@ -1,5 +1,6 @@
 from random import randrange
 BLANK_CHAR = ' '
+import time
 
 
 def get_next_move(grid: list[list[7]], i: int = -1):
@@ -21,4 +22,5 @@ def get_human_move(grid, i: int):
         return i
     else:
         print('The move you entered is invalid, doing some random move instead.') 
+        time.sleep(5)
         return get_random_move(grid)

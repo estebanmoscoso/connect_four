@@ -1,13 +1,13 @@
-from random import randrange
+from random import randrange, randint
 from math import exp
 ROWS = 6
 COLUMNS = 7
 GRID_SIZE = ROWS*COLUMNS
 N_MOVES = 6
-N_IN = GRID_SIZE*3 #+ #N_MOVES
+N_IN = GRID_SIZE*3 
 N_OUT = COLUMNS
 N_HID = int(N_IN * 2/3) + N_OUT  # TO DO: Get a more appropriate value
-N_HID = 41
+
 # mid = 0.5
 eta = 0.25 #0.25 
 hidden_gain = 0.5 #0.01  #Primer testeo hg=0.45
@@ -16,7 +16,7 @@ alpha = 0.5
 
 
 target = [0 for _ in range(N_OUT)]
-counselor_out = [0 for _ in range(N_OUT)]
+#counselor_out = [0 for _ in range(N_OUT)]
 inputs = [0 for _ in range(N_IN)]
 peak_value = 0
 net_winner = 0
@@ -44,8 +44,11 @@ out_layer = OutLayer()
 hidden_layer = HiddenLayer()
 
 
+# ----------------------------------------------------------
+# ----------------------------------------------------------
+
 def get_random_weight():
-    return randrange(-50, 51)/100
+    return randint(-50, 50)/100
 
 
 def init_weights():
@@ -58,11 +61,8 @@ def init_weights():
             out_layer.weights[k][i] = get_random_weight()
 
 
-def clear_weights():
-    for k in range(N_HID):
-        for i in range(N_IN):
-            hidden_layer.weights[k][i] = 0
-
+# ----------------------------------------------------------
+# ----------------------------------------------------------
 
 def fix_all_weights():
     # Output layer error
@@ -94,10 +94,10 @@ def fix_all_weights():
 
 def sigmoid(x: float, gain):
     # print('x', x)
-    if x < -30:
-        x = -30
     if x > 30:
         x = 30
+    if x < -30:
+        x = -30
     out = 1/(1 + exp(-gain * x))
     return out
 
@@ -116,6 +116,6 @@ def calculate_output_layer():
         for i in range(N_HID):
             out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
         out_layer.out[k] = sigmoid(out_layer.out[k], output_gain)
-    print(out_layer.out)
+    #print(out_layer.out)
  
 

@@ -41,5 +41,6 @@ def cargar_pesos():
         for k in range(N_OUT):
             for i in range(N_HID):
                 out_layer.weights[k][i] = float(l[count])
+                count += 1
     f.close()
 
