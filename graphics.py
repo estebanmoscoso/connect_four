@@ -236,13 +236,13 @@ class Window:
                 
               
                 if self.game.slow_flag:
-                    time.sleep(0.4)
+                    time.sleep(0.8)
                   
                   
                 fill_inputs(self.game)
                 o_learns.feed_forward()
                 if not self.game.game_over:
-                    print(f'Neurona ganadora: {nl.out_layer.out.index(max(nl.out_layer.out))}')  
+                    print(f'Winner neuron: {nl.out_layer.out.index(max(nl.out_layer.out))}')  
                 if self.render_flag:
                     self.change_hidden_neurons()
                     self.change_input_neurons()
@@ -267,7 +267,7 @@ class Window:
             o_learns.feed_forward()
             self.change_out_neurons()
             o_learns.search_winner_neuron()
-            #print(f'Neurona ganadora: {nl.net_winner}')
+            #print(f'Winner neuron: {nl.net_winner}')
             return nl.net_winner
         return -1
 
@@ -309,7 +309,7 @@ class Window:
                 fill_inputs(self.game)
                 o_learns.feed_forward()
                 if not self.game.game_over:
-                    print(f'Neurona ganadora: {nl.out_layer.out.index(max(nl.out_layer.out))}') 
+                    print(f'Winner neuron: {nl.out_layer.out.index(max(nl.out_layer.out))}') 
                 if self.render_flag:
                     self.change_input_neurons()
                     self.change_hidden_neurons()
@@ -376,7 +376,7 @@ class Window:
                 fill_inputs(self.game)
                 o_learns.feed_forward()
                 if not self.game.game_over:
-                    print(f'Neurona ganadora: {nl.out_layer.out.index(max(nl.out_layer.out))}') 
+                    print(f'Winner neuron: {nl.out_layer.out.index(max(nl.out_layer.out))}') 
                 if self.render_flag:
                     self.change_hidden_neurons()
                     self.change_color_hidden_weights()
