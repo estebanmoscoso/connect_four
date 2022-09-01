@@ -9,12 +9,12 @@ import threading
 import time
 
 
+
 class Window:
     def __init__(self, game):
         self.root = Tk()
         self.root.title("Connect Four")
         self.root.geometry("900x550")
-        #self.root.geometry(int(self.root.winfo_screenwidth()/2 - self.root.winfo_reqwidth()/2),int(self.root.winfo_screenheight()/2 - self.root.winfo_reqheight()/2))
         self.game = game
         self.grid_vars = [[StringVar() for _ in range(7)] for _ in range(6)]
         self.game_stats_var = StringVar()
@@ -23,7 +23,7 @@ class Window:
         self.render_flag = True
         self.target_bars = []
         self.target_canvas = None
-        self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(60)] for _ in range(11)]
+        self.pesos_canvas = [[Canvas(width=4, height=4, bg="gray") for _ in range(70)] for _ in range(11)]
         self.neuronas_entrada_canvas = [Canvas(width=6, height=6, bg='gray') for _ in range(len(inputs))]
         self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='deep pink') for _ in range(N_HID*2)]
         self.neuronas_salida_canvas = [Canvas(width=5, height=50, bg='blue violet') for _ in range(N_OUT*2)]
@@ -42,9 +42,10 @@ class Window:
         self.change_input_neurons()
 
     def end(self):
+        #self.game.space_flag = False
         self.root.mainloop()
+        
 
-    
     # ----------------------------------------------------------------------------------------
     # --------------------------------      Plots     ----------------------------------------
     # ----------------------------------------------------------------------------------------
@@ -59,14 +60,14 @@ class Window:
                 else:
                     self.pesos_canvas[fila][columna].configure(bg='gray') 
                     
-    def render_hidden_weights(self,x = 50, y = 300):
+    def render_hidden_weights(self,x = 30, y = 300):
         c = 0
         for fila in range(len(self.pesos_canvas)):
             for columna in range(len(self.pesos_canvas[0])):
                 c+=1
                 self.pesos_canvas[fila][columna].place(x = x, y = y)
                 x+= 6
-            x = 50; y += 6    
+            x = 30; y += 6    
 
     # ------------------------------------------------------------------------------------------
     def change_input_neurons(self):
@@ -161,6 +162,7 @@ class Window:
                                 f'Back propagation cicles: {nl.backpropagation_count}\n'
                                 f'Best move (q): {"Active" if self.best_move_toggle else "Inactive"}\n'
                                 f'Graphics (a): {"Active" if self.render_flag else "Inactive"}\n'
+                                f'Make slower (l): {"Active" if self.game.slow_flag else "Inactive"}\n'
                                 )
 
         label = Message(self.root, textvariable=self.game_stats_var, relief=RAISED, width=175)
@@ -177,6 +179,7 @@ class Window:
                                 f'Back propagation cicles: {nl.backpropagation_count}\n'
                                 f'Best move (q): {"Active" if self.best_move_toggle else "Inactive"}\n'
                                 f'Graphics (a): {"Active" if self.render_flag else "Inactive"}\n'
+                                f'Make slower (l): {"Active" if self.game.slow_flag else "Inactive"}\n'
                                 )
 
     def render_target_values(self, x_offset=100, y_offset=40):
@@ -205,7 +208,10 @@ class Window:
 
     def erase(self):
         for widget in self.root.winfo_children():
+            #self.game.space_flag = False
+            #print('')
             widget.destroy()
+            
 
     def fun(self):
         while self.game.space_flag:
@@ -215,18 +221,28 @@ class Window:
                     #Si b == 1: entrenar
                     if self.game.b_flag:
                         o_learns.explore_future(self.game)
+                        self.update_game_stats()
                         # ---- Plots -------
                         if self.render_flag:
                             self.change_hidden_neurons()
                             self.change_color_hidden_weights()
                             self.change_out_neurons()
-                            
-                 
+
+                           
                 i = -1 # jugada aleatoria
                 if self.best_move_toggle:
                     i = self.get_best_move()
-                self.game.play_one_turn(i)#; time.sleep(0.2)
+                self.game.play_one_turn(i)#; 
+                
+              
+                if self.game.slow_flag:
+                    time.sleep(0.4)
+                  
+                  
                 fill_inputs(self.game)
+                o_learns.feed_forward()
+                if not self.game.game_over:
+                    print(f'Neurona ganadora: {nl.out_layer.out.index(max(nl.out_layer.out))}')  
                 if self.render_flag:
                     self.change_hidden_neurons()
                     self.change_input_neurons()
@@ -251,7 +267,7 @@ class Window:
             o_learns.feed_forward()
             self.change_out_neurons()
             o_learns.search_winner_neuron()
-            print(f'Neurona ganadora: {nl.net_winner}')
+            #print(f'Neurona ganadora: {nl.net_winner}')
             return nl.net_winner
         return -1
 
@@ -268,6 +284,7 @@ class Window:
         
         
         elif c == 'p':
+            
             i = -1
             if self.best_move_toggle:
                 i = self.get_best_move()
@@ -276,6 +293,7 @@ class Window:
                 
                 # Jugador O
                 if self.game.current_player == self.game.players[0]:
+                    
                     if self.game.b_flag:
                         o_learns.explore_future(self.game)
                         
@@ -284,11 +302,14 @@ class Window:
                         self.change_hidden_neurons()
                         self.change_color_hidden_weights()
                         self.change_out_neurons()
-
+                        
+                
                 # Jugador O - X
                 self.game.play_one_turn(i)
                 fill_inputs(self.game)
                 o_learns.feed_forward()
+                if not self.game.game_over:
+                    print(f'Neurona ganadora: {nl.out_layer.out.index(max(nl.out_layer.out))}') 
                 if self.render_flag:
                     self.change_input_neurons()
                     self.change_hidden_neurons()
@@ -320,9 +341,11 @@ class Window:
             if self.game.space_flag:
                 t = threading.Thread(name = 'Verify space_flag', target=self.fun, args=())
                 t.start()
-
+            
             else:
                 print('Stop')
+               
+            
 
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
             # if not self.game.game_over:
@@ -347,9 +370,13 @@ class Window:
                     self.change_input_neurons()
 
                 # Jugador O - X
+                
+                
                 self.game.play_one_turn(int(e.char))
                 fill_inputs(self.game)
                 o_learns.feed_forward()
+                if not self.game.game_over:
+                    print(f'Neurona ganadora: {nl.out_layer.out.index(max(nl.out_layer.out))}') 
                 if self.render_flag:
                     self.change_hidden_neurons()
                     self.change_color_hidden_weights()
@@ -396,6 +423,9 @@ class Window:
                 self.change_out_neurons()
             print('Pesos randomizados')
             
+        elif c == 'l':
+            self.game.slow_flag = not self.game.slow_flag
+            self.update_game_stats()
             
 
             

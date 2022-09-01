@@ -1,4 +1,5 @@
 from random import randrange
+import os
 from policy import get_next_move
 import neural_lib as nl
 BLANK_CHAR = ' '
@@ -16,6 +17,7 @@ class Game:
         self.moves_counter = 0
         self.b_flag = False
         self.space_flag = False
+        self.slow_flag = False
 
         if starting_player is None:
             self.current_player = [player_1, player_2][randrange(2)]
@@ -23,6 +25,8 @@ class Game:
             self.current_player = starting_player
 
     def restart(self):
+        
+        os.system("CLS")
         self.grid = [[BLANK_CHAR for _ in range(7)] for _ in range(6)]
         self.game_over = False
         self.moves_counter = 0
