@@ -126,13 +126,13 @@ class Window:
 
 
     # ------------------------------------------------------------------------------------------
-    def render_grid(self, x_offset=80, y_offset=40):
+    def render_grid(self, x_offset=150, y_offset=80):
         grid = self.game.grid
         for i in range(8):
-            vertical_line = Frame(self.root, bg='white', height=152, width=1)
+            vertical_line = Frame(self.root, bg='black', height=152, width=1)
             vertical_line.place(x=x_offset + 20 * i, y=y_offset)
         for i in range(6):
-            horizontal_line = Frame(self.root, bg='white', height=1, width=140)
+            horizontal_line = Frame(self.root, bg='black', height=1, width=140)
             horizontal_line.place(x=x_offset, y=y_offset + 26 + 25 * i)
 
         for j in range(6):
@@ -153,7 +153,7 @@ class Window:
             for i in range(7):
                 self.update_cell(i, j)
 
-    def render_game_stats(self, x_offset=100, y_offset=40):
+    def render_game_stats(self, x_offset=180, y_offset=80):
         self.game_stats_var.set(f'Games played:      {self.game.games_played}\n'
                                 f'Games won by {self.game.players[0]}: {self.game.games_won[self.game.players[0]]}\n'
                                 f'Games won by {self.game.players[1]}: {self.game.games_won[self.game.players[1]]}\n'
@@ -279,11 +279,11 @@ class Window:
                     if self.game.b_flag:
                         o_learns.explore_future(self.game)
                         
-                        # ---- Plots -------
-                        if self.render_flag:
-                            self.change_hidden_neurons()
-                            self.change_color_hidden_weights()
-                            self.change_out_neurons()
+                    # ---- Plots -------
+                    if self.render_flag:
+                        self.change_hidden_neurons()
+                        self.change_color_hidden_weights()
+                        self.change_out_neurons()
 
                 # Jugador O - X
                 self.game.play_one_turn(i)
@@ -291,6 +291,9 @@ class Window:
                 o_learns.feed_forward()
                 if self.render_flag:
                     self.change_input_neurons()
+                    self.change_hidden_neurons()
+                    self.change_color_hidden_weights()
+                    self.change_out_neurons()
 
 
                 if self.render_flag:
@@ -322,18 +325,41 @@ class Window:
                 print('Stop')
 
         elif c in ['0', '1', '2', '3', '4', '5', '6']:
-            if not self.game.game_over:
-                if self.game.current_player == self.game.players[0]:
-                    if self.render_flag:
-                        self.render_target_bars()
+            # if not self.game.game_over:
+            #     if self.game.current_player == self.game.players[0]:
+            #         if self.render_flag:
+            #             self.render_target_bars()
+            #     self.game.play_one_turn(int(e.char))
+            #     fill_inputs(self.game)
+            #     if self.render_flag:
+            #         self.change_input_neurons()
+                
+            #     if self.render_flag:
+            #         self.update_cell(self.game.last_move[0], self.game.last_move[1])
+            if not self.game.game_over:      
+                fill_inputs(self.game)
+                o_learns.feed_forward()       
+                # ---- Plots -------
+                if self.render_flag:
+                    self.change_hidden_neurons()
+                    self.change_color_hidden_weights()
+                    self.change_out_neurons()
+                    self.change_input_neurons()
+
+                # Jugador O - X
                 self.game.play_one_turn(int(e.char))
                 fill_inputs(self.game)
+                o_learns.feed_forward()
                 if self.render_flag:
+                    self.change_hidden_neurons()
+                    self.change_color_hidden_weights()
+                    self.change_out_neurons()
                     self.change_input_neurons()
-                
-                if self.render_flag:
+                    
                     self.update_cell(self.game.last_move[0], self.game.last_move[1])
-
+                    if self.game.current_player == self.game.players[0] and not self.game.game_over:
+                        self.render_target_bars()
+                        
         elif c == 'q':
             self.best_move_toggle = not self.best_move_toggle
             self.update_game_stats()

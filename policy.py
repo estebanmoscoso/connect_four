@@ -22,5 +22,5 @@ def get_human_move(grid, i: int):
         return i
     else:
         print('The move you entered is invalid, doing some random move instead.') 
-        time.sleep(5)
+        #time.sleep(5)
         return get_random_move(grid)

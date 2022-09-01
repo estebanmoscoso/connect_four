@@ -108,7 +108,7 @@ def  calculate_hidden_layer():
         for i in range(N_IN):
             hidden_layer.out[k] += hidden_layer.weights[k][i] * inputs[i]
         hidden_layer.out[k] = sigmoid(hidden_layer.out[k], hidden_gain)
-
+    #print(hidden_layer.out)
 
 def calculate_output_layer():
     for k in range(N_OUT):
@@ -116,6 +116,5 @@ def calculate_output_layer():
         for i in range(N_HID):
             out_layer.out[k] += out_layer.weights[k][i] * hidden_layer.out[i]
         out_layer.out[k] = sigmoid(out_layer.out[k], output_gain)
-    #print(out_layer.out)
  
 
