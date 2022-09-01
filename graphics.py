@@ -15,6 +15,7 @@ class Window:
         self.root = Tk()
         self.root.title("Connect Four")
         self.root.geometry("900x550")
+        #self.root.configure(bg='white')
         self.game = game
         self.grid_vars = [[StringVar() for _ in range(7)] for _ in range(6)]
         self.game_stats_var = StringVar()
@@ -28,6 +29,22 @@ class Window:
         self.neuronas_escondidas_canvas = [Canvas(width=2, height=50, bg='deep pink') for _ in range(N_HID*2)]
         self.neuronas_salida_canvas = [Canvas(width=5, height=50, bg='blue violet') for _ in range(N_OUT*2)]
         self.best_move_toggle = False
+        w = Label(self.root, text ='Connect Four', font = ("Verdana",20),fg="Navyblue") 
+        w.place(y = 30)
+        w.pack() 
+        windowWidth = self.root.winfo_reqwidth()
+        windowHeight = self.root.winfo_reqheight()
+        print("Width",windowWidth,"Height",windowHeight)
+        
+        # Gets both half the screen width/height and window width/height
+        positionRight = int(self.root.winfo_screenwidth()/2 - 2*windowWidth)
+        positionDown = int(self.root.winfo_screenheight()/2 - 1.5*windowHeight)
+        
+        # Positions the window in the center of the page.
+        self.root.geometry("+{}+{}".format(positionRight, positionDown))
+        
+        
+        
         self.start()
 
     def start(self):
@@ -130,10 +147,10 @@ class Window:
     def render_grid(self, x_offset=150, y_offset=80):
         grid = self.game.grid
         for i in range(8):
-            vertical_line = Frame(self.root, bg='black', height=152, width=1)
+            vertical_line = Frame(self.root, bg='Navyblue', height=152, width=1)
             vertical_line.place(x=x_offset + 20 * i, y=y_offset)
         for i in range(6):
-            horizontal_line = Frame(self.root, bg='black', height=1, width=140)
+            horizontal_line = Frame(self.root, bg='Navyblue', height=1, width=140)
             horizontal_line.place(x=x_offset, y=y_offset + 26 + 25 * i)
 
         for j in range(6):
@@ -148,6 +165,7 @@ class Window:
 
     def update_cell(self, i, j):
         self.grid_vars[j][i].set(self.game.grid[j][i])
+        
 
     def update_grid(self):
         for j in range(6):
@@ -162,10 +180,10 @@ class Window:
                                 f'Back propagation cicles: {nl.backpropagation_count}\n'
                                 f'Best move (q): {"Active" if self.best_move_toggle else "Inactive"}\n'
                                 f'Graphics (a): {"Active" if self.render_flag else "Inactive"}\n'
-                                f'Make slower (l): {"Active" if self.game.slow_flag else "Inactive"}\n'
+                                f'Make slower (l): {"Active" if self.game.slow_flag else "Inactive"}'
                                 )
 
-        label = Message(self.root, textvariable=self.game_stats_var, relief=RAISED, width=175)
+        label = Message(self.root, textvariable=self.game_stats_var, relief=RAISED, width=175, bg='indianred1')
         label.place(x=x_offset + 170, y=y_offset + 10)
         
         
@@ -179,7 +197,7 @@ class Window:
                                 f'Back propagation cicles: {nl.backpropagation_count}\n'
                                 f'Best move (q): {"Active" if self.best_move_toggle else "Inactive"}\n'
                                 f'Graphics (a): {"Active" if self.render_flag else "Inactive"}\n'
-                                f'Make slower (l): {"Active" if self.game.slow_flag else "Inactive"}\n'
+                                f'Make slower (l): {"Active" if self.game.slow_flag else "Inactive"}'
                                 )
 
     def render_target_values(self, x_offset=100, y_offset=40):
